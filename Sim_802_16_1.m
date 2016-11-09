@@ -30,10 +30,10 @@ for i=1:length(bits)/2
 end
 %----------------------------fim modulação QPSK---------------------------%
 
-Eb_N0_dB = 0:1:9; %Eb/N0 range
+Eb_N0_dB = 0:1:10; %Eb/N0 range
 Eb_N0_lin = 10 .^ (Eb_N0_dB/10); %linearized Eb/N0 range
 ber = zeros(size(Eb_N0_lin)); %pre-allocates BER vector
-Eb = 2; % the average energy per bit, since we have 1 bit per symbol and average symbol energy = 1  (( 1^2 + (-1)^2 ) / 2)
+Eb = 2; % the average energy per bit, since we have 2 bit per symbol and average symbol energy = 2  (( 1^2 + 1^2 ) in each quadrant)
 
 NP = Eb ./ (2*Eb_N0_lin); %real-valued noise power = N0/2
 NA = sqrt(NP); %noise amplitude is the square root of the noise power

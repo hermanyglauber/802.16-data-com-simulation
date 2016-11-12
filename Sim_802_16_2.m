@@ -3,9 +3,6 @@ close;
 num_b = 1000000; %number of bits to be simulated
 k = 1;
 bits=randi(2, 1, num_b)-1; %bits is a random real vector = 0 or +1 
-display(bits);
-
-
 %WirelessMAN-SC?
 %802.16 bits encode strategy? 
 %codigos concatenados Codigo externo + codigo interno: Reed-Solomon (com t ajustável), paridade, código convolucional e Block Turbo Code
@@ -67,29 +64,40 @@ for i = 1:length(Eb_N0_lin)
     %-------------------------demodulação do sinal------------------------%   
     for k=1:length(r) %informação está no signal da parte imaginaria e real do signal distorcido recebido
         if(real(r(k))>0) 
-            if(imag(r(k))>0) %simbolo recebido real positivo imaginario positivo mapeia para bits 00
+            if(imag(r(k))>0) %simbolo recebido real positivo imaginario positivo
+                %calculo da distancia da amostra recebida e os 4 pontos do
+                %quadrante real positivo imaginario positivo da constelação
+                %16-QAM
                 dist1=sqrt( (real(r(k)) - 1)^2 + (imag(r(k)) - 3) ^ 2 );
                 dist2=sqrt( (real(r(k)) - 3)^2 + (imag(r(k)) - 3) ^ 2 );
                 dist3=sqrt( (real(r(k)) - 1)^2 + (imag(r(k)) - 1) ^ 2 );
                 dist4=sqrt( (real(r(k)) - 3)^2 + (imag(r(k)) - 1) ^ 2 );
+                %caso a menor distancia seja em relação ao ponto (1,3)
+                %então o símbolo recebido é '1100'
                 if(dist1<dist2 && dist1<dist3 && dist1<dist4)                
                     demod(4*k-3) = 1; 
                     demod(4*k-2) = 1; 
                     demod(4*k-1) = 0; 
                     demod(4*k) = 0;
                 end
+                %caso a menor distancia seja em relação ao ponto (3,3)
+                %então o símbolo recebido é '1000'
                 if(dist2<dist1 && dist2<dist3 && dist2<dist4)                
                     demod(4*k-3) = 1; 
                     demod(4*k-2) = 0; 
                     demod(4*k-1) = 0; 
                     demod(4*k) = 0;
                 end
+                %caso a menor distancia seja em relação ao ponto (1,1)
+                %então o símbolo recebido é '1101'
                 if(dist3<dist1 && dist3<dist1 && dist3<dist4)                
                     demod(4*k-3) = 1; 
                     demod(4*k-2) = 1; 
                     demod(4*k-1) = 0; 
                     demod(4*k) = 1;
                 end
+                %caso a menor distancia seja em relação ao ponto (3,1)
+                %então o símbolo recebido é '1001'
                 if(dist4<=dist1 && dist4<=dist2 && dist4<=dist3)                
                     demod(4*k-3) = 1; 
                     demod(4*k-2) = 0; 
@@ -97,29 +105,40 @@ for i = 1:length(Eb_N0_lin)
                     demod(4*k) = 1;
                 end
                     
-            else            %simbolo recebido real positivo imaginario negativo mapeia para bits 11
+            else            %simbolo recebido real positivo imaginario negativo
+                %calculo da distancia da amostra recebida e os 4 pontos do
+                %quadrante real positivo imaginario negativo da constelação
+                %16-QAM
                 dist1=sqrt( (real(r(k)) - 1)^2 + (imag(r(k)) + 1) ^ 2 );
                 dist2=sqrt( (real(r(k)) - 3)^2 + (imag(r(k)) + 1) ^ 2 );
                 dist3=sqrt( (real(r(k)) - 1)^2 + (imag(r(k)) + 3) ^ 2 );
                 dist4=sqrt( (real(r(k)) - 3)^2 + (imag(r(k)) + 3) ^ 2 );
+                %caso a menor distancia seja em relação ao ponto (1,-1)
+                %então o símbolo recebido é '1111'
                 if(dist1<dist2 && dist1<dist3 && dist1<dist4)                
                     demod(4*k-3) = 1; 
                     demod(4*k-2) = 1; 
                     demod(4*k-1) = 1; 
                     demod(4*k) = 1;
                 end
+                %caso a menor distancia seja em relação ao ponto (3,-1)
+                %então o símbolo recebido é '1011'
                 if(dist2<dist1 && dist2<dist3 && dist2<dist4)                
                     demod(4*k-3) = 1; 
                     demod(4*k-2) = 0; 
                     demod(4*k-1) = 1; 
                     demod(4*k) = 1;
                 end
+                %caso a menor distancia seja em relação ao ponto (1,-3)
+                %então o símbolo recebido é '1110'
                 if(dist3<dist1 && dist3<dist1 && dist3<dist4)                
                     demod(4*k-3) = 1; 
                     demod(4*k-2) = 1; 
                     demod(4*k-1) = 1; 
                     demod(4*k) = 0;
                 end
+                %caso a menor distancia seja em relação ao ponto (3,-3)
+                %então o símbolo recebido é '1010'
                 if(dist4<=dist1 && dist4<=dist2 && dist4<=dist3)                
                     demod(4*k-3) = 1; 
                     demod(4*k-2) = 0; 
@@ -128,58 +147,80 @@ for i = 1:length(Eb_N0_lin)
                 end
             end
         else
-            if(imag(r(k))>0) %simbolo recebido real negativo imaginario positivo mapeia para bits 01
+            if(imag(r(k))>0) %simbolo recebido real negativo imaginario positivo
+                %calculo da distancia da amostra recebida e os 4 pontos do
+                %quadrante real negativo imaginario positivo da constelação
+                %16-QAM
                 dist1=sqrt( (real(r(k)) + 3)^2 + (imag(r(k)) - 3) ^ 2 );
                 dist2=sqrt( (real(r(k)) + 1)^2 + (imag(r(k)) - 3) ^ 2 );
                 dist3=sqrt( (real(r(k)) + 3)^2 + (imag(r(k)) - 1) ^ 2 );
                 dist4=sqrt( (real(r(k)) + 1)^2 + (imag(r(k)) - 1) ^ 2 );
+                %caso a menor distancia seja em relação ao ponto (-3,3)
+                %então o símbolo recebido é '0000'
                 if(dist1<dist2 && dist1<dist3 && dist1<dist4)                
                     demod(4*k-3) = 0; 
                     demod(4*k-2) = 0; 
                     demod(4*k-1) = 0; 
                     demod(4*k) = 0;
                 end
+                %caso a menor distancia seja em relação ao ponto (-1,3)
+                %então o símbolo recebido é '0100'
                 if(dist2<dist1 && dist2<dist3 && dist2<dist4)                
                     demod(4*k-3) = 0; 
                     demod(4*k-2) = 1; 
                     demod(4*k-1) = 0; 
                     demod(4*k) = 0;
                 end
+                %caso a menor distancia seja em relação ao ponto (-3,1)
+                %então o símbolo recebido é '0001'
                 if(dist3<dist1 && dist3<dist1 && dist3<dist4)                
                     demod(4*k-3) = 0; 
                     demod(4*k-2) = 0; 
                     demod(4*k-1) = 0; 
                     demod(4*k) = 1;
                 end
+                %caso a menor distancia seja em relação ao ponto (-1,3)
+                %então o símbolo recebido é '0101'
                 if(dist4<=dist1 && dist4<=dist2 && dist4<=dist3)                
                     demod(4*k-3) = 0; 
                     demod(4*k-2) = 1; 
                     demod(4*k-1) = 0; 
                     demod(4*k) = 1;
                 end
-            else             %simbolo recebido real negativo imaginario negativo mapeia para bits 10
+            else             %simbolo recebido real negativo imaginario negativo
+                  %calculo da distancia da amostra recebida e os 4 pontos do
+                %quadrante real negativo imaginario negativo da constelação
+                %16-QAM
                 dist1=sqrt( (real(r(k)) + 3)^2 + (imag(r(k)) + 1) ^ 2 );
                 dist2=sqrt( (real(r(k)) + 1)^2 + (imag(r(k)) + 1) ^ 2 );
                 dist3=sqrt( (real(r(k)) + 3)^2 + (imag(r(k)) + 3) ^ 2 );
                 dist4=sqrt( (real(r(k)) + 1)^2 + (imag(r(k)) + 3) ^ 2 );
-                  if(dist1<dist2 && dist1<dist3 && dist1<dist4)                
+                %caso a menor distancia seja em relação ao ponto (-3,-1)
+                %então o símbolo recebido é '0011'
+                if(dist1<dist2 && dist1<dist3 && dist1<dist4)                
                     demod(4*k-3) = 0; 
                     demod(4*k-2) = 0; 
                     demod(4*k-1) = 1; 
                     demod(4*k) = 1;
                 end
+                %caso a menor distancia seja em relação ao ponto (-1,-1)
+                %então o símbolo recebido é '0111'
                 if(dist2<dist1 && dist2<dist3 && dist2<dist4)                
                     demod(4*k-3) = 0; 
                     demod(4*k-2) = 1; 
                     demod(4*k-1) = 1; 
                     demod(4*k) = 1;
                 end
+                %caso a menor distancia seja em relação ao ponto (-3,-3)
+                %então o símbolo recebido é '0010'
                 if(dist3<dist1 && dist3<dist1 && dist3<dist4)                
                     demod(4*k-3) = 0; 
                     demod(4*k-2) = 0; 
                     demod(4*k-1) = 1; 
                     demod(4*k) = 0;
                 end
+                %caso a menor distancia seja em relação ao ponto (-1,-3)
+                %então o símbolo recebido é '0110'
                 if(dist4<=dist1 && dist4<=dist2 && dist4<=dist3)                
                     demod(4*k-3) = 0; 
                     demod(4*k-2) = 1; 
@@ -192,8 +233,6 @@ for i = 1:length(Eb_N0_lin)
     %------------------fim demodulação do sinal---------------------------%
     ber(i) = sum(bits ~= demod) / num_b; % counts errors and calculates BER
 end
-
-display(demod);
 
 ber_theoretical = 0.5*erfc(sqrt(2*Eb_N0_lin)/sqrt(2)); %theoretical BER for comparison
 
